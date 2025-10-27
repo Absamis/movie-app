@@ -1,0 +1,23 @@
+workflows:
+  react-native-ios:
+    name: React Native iOS build
+    environment:
+      node: latest
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm install
+      - name: Install pods
+        script: |
+          cd ios && pod install && cd ..
+      - name: Build iOS
+        script: |
+          cd ios && xcodebuild -workspace YourAppName.xcworkspace \
+          -scheme YourAppName \
+          -configuration Release \
+          -sdk iphoneos \
+          -archivePath $CM_BUILD_DIR/YourAppName.xcarchive archive
+    artifacts:
+      - ios/build/**/*.ipa
