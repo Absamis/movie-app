@@ -16,15 +16,19 @@ workflows:
         script: |
           cd ios
           pod install
-      - name: Bundle JavaScript for iOS
+      - name: Bundle React Native code and assets
         script: |
+          mkdir -p ios/build
           npx react-native bundle \
+            --entry-file index.js \
             --platform ios \
             --dev false \
-            --entry-file index.js \
-            --bundle-output ios/main.jsbundle \
-            --assets-dest ios
-      - name: Build for iOS Simulator
+            --bundle-output ios/build/main.jsbundle \
+            --assets-dest ios/build
+      - name: Copy JS bundle into Xcode project
+        script: |
+          cp ios/build/main.jsbundle ios/
+      - name: Build iOS simulator app
         script: |
           cd ios
           xcodebuild \
@@ -32,6 +36,7 @@ workflows:
             -scheme "${PROJECT_NAME}" \
             -sdk iphonesimulator \
             -configuration Debug \
-            -derivedDataPath build
+            -derivedDataPath build \
+            -UseModernBuildSystem=YES
     artifacts:
       - ios/build/Build/Products/Debug-iphonesimulator/*.app
