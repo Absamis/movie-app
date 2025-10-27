@@ -16,6 +16,14 @@ workflows:
         script: |
           cd ios
           pod install
+      - name: Bundle JavaScript for iOS
+        script: |
+          npx react-native bundle \
+            --platform ios \
+            --dev false \
+            --entry-file index.js \
+            --bundle-output ios/main.jsbundle \
+            --assets-dest ios
       - name: Build for iOS Simulator
         script: |
           cd ios
